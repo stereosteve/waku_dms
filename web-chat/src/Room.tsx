@@ -101,11 +101,8 @@ async function handleMessage(
     }
 
     const pubkeyHex = args.shift()!;
-    console.log({ pubkeyHex });
     const pubkey = utils.hexToBytes(pubkeyHex);
-    console.log({ pubkeyHex, pubkey });
     const txt = args.join(" ");
-    console.log({ dm: true, pubkey, txt });
 
     const timestamp = new Date();
     const chatMessage = ChatMessage.fromUtf8String(timestamp, nick, txt);

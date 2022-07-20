@@ -13,6 +13,7 @@ import { WakuContext } from "./WakuContext";
 import { ThemeProvider } from "@livechat/ui-kit";
 // import { generate } from "server-name-generator";
 import { Message } from "./Message";
+import { readMyInvites } from "./invites";
 // import { Multiaddr } from "multiaddr";
 // import { Multiaddr } from "multiaddr";
 
@@ -137,6 +138,13 @@ export default function App() {
     const retrieveMessages = async () => {
       await waku.waitForRemotePeer();
       console.log(`Retrieving archived messages`);
+
+      // fetch invites here
+      try {
+        readMyInvites(waku);
+      } catch (e) {
+        console.log(`fetch invites failed`, e);
+      }
 
       try {
         retrieveStoreMessages(waku, dispatchMessages).then((length) => {
