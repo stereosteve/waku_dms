@@ -11,7 +11,7 @@ import handleCommand from "./command";
 import Room from "./Room";
 import { WakuContext } from "./WakuContext";
 import { ThemeProvider } from "@livechat/ui-kit";
-// import { generate } from "server-name-generator";
+import { generate } from "server-name-generator";
 import { Message } from "./Message";
 import { readMyInvites } from "./invites";
 // import { Multiaddr } from "multiaddr";
@@ -91,19 +91,16 @@ async function retrieveStoreMessages(
 export default function App() {
   const [messages, dispatchMessages] = useReducer(reduceMessages, []);
   const [waku, setWaku] = useState<Waku | undefined>(undefined);
-  // const [nick, setNick] = useState<string>(() => {
-  //   const persistedNick = window.localStorage.getItem("nick");
-  //   return persistedNick !== null ? persistedNick : generate();
-  // });
+  const [nick, setNick] = useState<string>(() => {
+    const persistedNick = window.localStorage.getItem("nick");
+    return persistedNick !== null ? persistedNick : generate();
+  });
   const [historicalMessagesRetrieved, setHistoricalMessagesRetrieved] =
     useState(false);
 
-  const nick = "steve";
-  const setNick = () => {};
-
-  // useEffect(() => {
-  //   localStorage.setItem("nick", nick);
-  // }, [nick]);
+  useEffect(() => {
+    localStorage.setItem("nick", nick);
+  }, [nick]);
 
   useEffect(() => {
     initWaku(setWaku)
