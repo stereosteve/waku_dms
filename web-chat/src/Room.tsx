@@ -5,7 +5,6 @@ import MessageInput from "./MessageInput";
 import { useWaku } from "./WakuContext";
 import { TitleBar } from "@livechat/ui-kit";
 import { Message } from "./Message";
-import { ChatMessage } from "./chat_message";
 import { useEffect, useState } from "react";
 import { utils } from "js-waku";
 
@@ -59,19 +58,23 @@ export default function Room(props: Props) {
   }, [waku]);
 
   async function handleMessage(
-    message: string,
+    payload: string,
     nick: string,
     messageSender: (msg: WakuMessage) => Promise<void>
   ) {
     const timestamp = new Date();
-    const chatMessage = ChatMessage.fromUtf8String(
-      timestamp,
-      nick,
-      myPubkeyHex!,
-      message
+    const timestampNumber = Math.floor(timestamp.valueOf() / 1000);
+    const message = new Message(
+      {
+        timestamp: timestampNumber,
+        nick,
+        fromPubkey: myPubkeyHex!,
+        payload,
+      },
+      timestamp
     );
     const wakuMsg = await WakuMessage.fromUtf8String(
-      chatMessage.encode(),
+      message.encode(),
       ChatContentTopic,
       { timestamp }
     );

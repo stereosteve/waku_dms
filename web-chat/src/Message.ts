@@ -1,12 +1,20 @@
 import { WakuMessage } from "js-waku";
-import { ChatMessage } from "./chat_message";
+
+type ChatFields = {
+  timestamp: number;
+  nick: string;
+  fromPubkey: string;
+  toPubkeys?: string[];
+  payload: string;
+};
 
 export class Message {
-  public chatMessage: ChatMessage;
+  public chatMessage: ChatFields;
+
   // WakuMessage timestamp
   public sentTimestamp: Date | undefined;
 
-  constructor(chatMessage: ChatMessage, sentTimestamp: Date | undefined) {
+  constructor(chatMessage: ChatFields, sentTimestamp: Date | undefined) {
     this.chatMessage = chatMessage;
     this.sentTimestamp = sentTimestamp;
   }
@@ -14,15 +22,18 @@ export class Message {
   static fromWakuMessage(wakuMsg: WakuMessage): Message | undefined {
     if (wakuMsg.payload) {
       try {
-        const chatMsg = ChatMessage.decode(wakuMsg.payloadAsUtf8);
-        if (chatMsg) {
-          return new Message(chatMsg, wakuMsg.timestamp);
-        }
+        const chatFields: ChatFields = JSON.parse(wakuMsg.payloadAsUtf8);
+        // should validate JSON here
+        return new Message(chatFields, wakuMsg.timestamp);
       } catch (e) {
         console.error("Failed to decode chat message", e);
       }
     }
     return;
+  }
+
+  encode() {
+    return JSON.stringify(this.chatMessage);
   }
 
   get nick() {
@@ -34,6 +45,6 @@ export class Message {
   }
 
   get payloadAsUtf8() {
-    return this.chatMessage.chatFields.payload;
+    return this.chatMessage.payload;
   }
 }

@@ -28,7 +28,10 @@ export default function ChatList(props: Props) {
     >
       <MessageText>
         <div style={{ fontSize: "60%", color: "#ccc" }}>
-          {message.chatMessage.chatFields.fromPubkey}
+          {message.chatMessage.fromPubkey}
+        </div>
+        <div style={{ fontSize: "60%", color: "#ccc" }}>
+          {message.chatMessage.fromPubkey}
         </div>
         {message.payloadAsUtf8}
       </MessageText>
@@ -44,7 +47,8 @@ export default function ChatList(props: Props) {
 }
 
 function formatDisplayDate(message: Message): string {
-  return message.timestamp.toLocaleString([], {
+  const ts = new Date(message.timestamp);
+  return ts.toLocaleString([], {
     month: "short",
     day: "numeric",
     hour: "numeric",
