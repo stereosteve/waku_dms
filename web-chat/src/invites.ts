@@ -63,7 +63,7 @@ export async function readMyInvites(waku: Waku) {
     });
 
   // just for testing...
-  sendPretendInvites(waku);
+  // sendPretendInvites(waku);
 }
 
 //

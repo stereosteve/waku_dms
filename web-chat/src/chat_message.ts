@@ -1,7 +1,3 @@
-import { Reader } from "protobufjs/minimal";
-
-import * as proto from "./proto/chat_message";
-
 /**
  * ChatMessage is used by the various show case waku apps that demonstrates
  * waku used as the network layer for chat group applications.
@@ -9,8 +5,15 @@ import * as proto from "./proto/chat_message";
  * This is included to help building PoC and MVPs. Apps that aim to be
  * production ready should use a more appropriate data structure.
  */
+
+type ChatFields = {
+  timestamp: number;
+  nick: string;
+  payload: string;
+};
+
 export class ChatMessage {
-  public constructor(public proto: proto.ChatMessage) {}
+  public constructor(public chatFields: ChatFields) {}
 
   /**
    * Create Chat Message with a utf-8 string as payload.
@@ -21,12 +24,11 @@ export class ChatMessage {
     text: string
   ): ChatMessage {
     const timestampNumber = Math.floor(timestamp.valueOf() / 1000);
-    const payload = Buffer.from(text, "utf-8");
 
     return new ChatMessage({
       timestamp: timestampNumber,
       nick,
-      payload,
+      payload: text,
     });
   }
 
@@ -34,32 +36,32 @@ export class ChatMessage {
    * Decode a protobuf payload to a ChatMessage.
    * @param bytes The payload to decode.
    */
-  static decode(bytes: Uint8Array): ChatMessage {
-    const protoMsg = proto.ChatMessage.decode(Reader.create(bytes));
-    return new ChatMessage(protoMsg);
+  static decode(json: string): ChatMessage {
+    const fields = JSON.parse(json);
+    return new ChatMessage(fields);
   }
 
   /**
    * Encode this ChatMessage to a byte array, to be used as a protobuf payload.
    * @returns The encoded payload.
    */
-  encode(): Uint8Array {
-    return proto.ChatMessage.encode(this.proto).finish();
+  encode(): string {
+    return JSON.stringify(this.chatFields);
   }
 
   get timestamp(): Date {
-    return new Date(this.proto.timestamp * 1000);
+    return new Date(this.chatFields.timestamp * 1000);
   }
 
   get nick(): string {
-    return this.proto.nick;
+    return this.chatFields.nick;
   }
 
   get payloadAsUtf8(): string {
-    if (!this.proto.payload) {
+    if (!this.chatFields.payload) {
       return "";
     }
 
-    return Buffer.from(this.proto.payload).toString("utf-8");
+    return Buffer.from(this.chatFields.payload).toString("utf-8");
   }
 }

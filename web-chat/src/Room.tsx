@@ -106,18 +106,13 @@ async function handleMessage(
 
     const timestamp = new Date();
     const chatMessage = ChatMessage.fromUtf8String(timestamp, nick, txt);
-    const wakuMsg = await WakuMessage.fromBytes(
+    const wakuMsg = await WakuMessage.fromUtf8String(
       chatMessage.encode(),
       ChatContentTopic,
       { timestamp, encPublicKey: pubkey }
     );
 
     return messageSender(wakuMsg);
-
-    // const chatMessage = ChatMessage.fromUtf8String(timestamp, nick, message);
-    // const message = await WakuMessage.fromBytes(chatMessage.encode(),, ChatContentTopic, {
-    //   encPublicKey: publicKey,
-    // });
   }
 
   if (message.startsWith("/")) {
@@ -125,7 +120,7 @@ async function handleMessage(
   } else {
     const timestamp = new Date();
     const chatMessage = ChatMessage.fromUtf8String(timestamp, nick, message);
-    const wakuMsg = await WakuMessage.fromBytes(
+    const wakuMsg = await WakuMessage.fromUtf8String(
       chatMessage.encode(),
       ChatContentTopic,
       { timestamp }

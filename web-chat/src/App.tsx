@@ -46,7 +46,7 @@ const themes = {
   },
 };
 
-export const ChatContentTopic = "/toy-chat/2/huilong/proto";
+export const ChatContentTopic = "/audius-chat/1/hackathon/json";
 
 async function retrieveStoreMessages(
   waku: Waku,
@@ -197,12 +197,12 @@ async function initWaku(setter: (waku: Waku) => void) {
       bootstrap: {
         peers: [
           // "/dns4/isaac-waku.audius.co/tcp/8000/ws/p2p/16Uiu2HAmSvJ5sdNSXJkDo5NkTkH9DFoeHRTai3HLYaDpRncFM6h5",
-          "/dns4/hareesh-waku.audius.co/tcp/8000/ws/p2p/16Uiu2HAmCyh1NtKeWyKapKxQ5jB7syr6myh7D2KtG7HNuRxbUs4v",
+          // "/dns4/hareesh-waku.audius.co/tcp/8000/ws/p2p/16Uiu2HAmCyh1NtKeWyKapKxQ5jB7syr6myh7D2KtG7HNuRxbUs4v",
           // "/dns4/joe-waku.audius.co/tcp/8000/ws/p2p/16Uiu2HAmBFzip5j4TvECok3oFZ1dvJyDbWgUXSd1fHSS89iVTZbW",
           // "/dns4/waku.audius2.stereosteve.com/tcp/8000/ws/p2p/16Uiu2HAmQDYtHQDWHzTrDu8uv5kYoZ1f8pvpUq1p8A2hieS3fnNn",
 
-          // "/dns4/localhost/tcp/8000/ws/p2p/16Uiu2HAm4Z7BSydTt2WmNPdm3mu57Gr5emBNjqsBJnyNiifRtzWY",
-          // "/dns4/localhost/tcp/8001/ws/p2p/16Uiu2HAmSXY6voQFgDphNDQz3fFProHPFYCsC4tBvxh6BsfMVUG9",
+          "/dns4/localhost/tcp/8000/ws/p2p/16Uiu2HAm4Z7BSydTt2WmNPdm3mu57Gr5emBNjqsBJnyNiifRtzWY",
+          "/dns4/localhost/tcp/8001/ws/p2p/16Uiu2HAmSXY6voQFgDphNDQz3fFProHPFYCsC4tBvxh6BsfMVUG9",
         ],
       },
     });

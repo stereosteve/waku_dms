@@ -14,7 +14,7 @@ export class Message {
   static fromWakuMessage(wakuMsg: WakuMessage): Message | undefined {
     if (wakuMsg.payload) {
       try {
-        const chatMsg = ChatMessage.decode(wakuMsg.payload);
+        const chatMsg = ChatMessage.decode(wakuMsg.payloadAsUtf8);
         if (chatMsg) {
           return new Message(chatMsg, wakuMsg.timestamp);
         }
