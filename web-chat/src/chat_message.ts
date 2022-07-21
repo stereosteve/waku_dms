@@ -9,6 +9,7 @@
 type ChatFields = {
   timestamp: number;
   nick: string;
+  fromPubkey: string;
   payload: string;
 };
 
@@ -21,6 +22,7 @@ export class ChatMessage {
   static fromUtf8String(
     timestamp: Date,
     nick: string,
+    fromPubkey: string,
     text: string
   ): ChatMessage {
     const timestampNumber = Math.floor(timestamp.valueOf() / 1000);
@@ -28,6 +30,7 @@ export class ChatMessage {
     return new ChatMessage({
       timestamp: timestampNumber,
       nick,
+      fromPubkey,
       payload: text,
     });
   }
@@ -55,13 +58,5 @@ export class ChatMessage {
 
   get nick(): string {
     return this.chatFields.nick;
-  }
-
-  get payloadAsUtf8(): string {
-    if (!this.chatFields.payload) {
-      return "";
-    }
-
-    return Buffer.from(this.chatFields.payload).toString("utf-8");
   }
 }

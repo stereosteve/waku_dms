@@ -26,7 +26,12 @@ export default function ChatList(props: Props) {
       authorName={message.nick}
       date={formatDisplayDate(message)}
     >
-      <MessageText>{message.payloadAsUtf8}</MessageText>
+      <MessageText>
+        <div style={{ fontSize: "60%", color: "#ccc" }}>
+          {message.chatMessage.chatFields.fromPubkey}
+        </div>
+        {message.payloadAsUtf8}
+      </MessageText>
     </LiveMessage>
   ));
 

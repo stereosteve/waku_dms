@@ -25,11 +25,6 @@ export class Message {
     return;
   }
 
-  static fromUtf8String(nick: string, text: string): Message {
-    const now = new Date();
-    return new Message(ChatMessage.fromUtf8String(now, nick, text), now);
-  }
-
   get nick() {
     return this.chatMessage.nick;
   }
@@ -39,6 +34,6 @@ export class Message {
   }
 
   get payloadAsUtf8() {
-    return this.chatMessage.payloadAsUtf8;
+    return this.chatMessage.chatFields.payload;
   }
 }

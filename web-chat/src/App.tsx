@@ -7,7 +7,6 @@ import {
   Waku,
   WakuMessage,
 } from "js-waku";
-import handleCommand from "./command";
 import Room from "./Room";
 import { WakuContext } from "./WakuContext";
 import { ThemeProvider } from "@livechat/ui-kit";
@@ -161,22 +160,17 @@ export default function App() {
       className="chat-app"
       style={{ height: "100vh", width: "100vw", overflow: "hidden" }}
     >
+      <div>
+        nick:
+        <input
+          type="text"
+          value={nick}
+          onChange={(e) => setNick(e.target.value)}
+        />
+      </div>
       <WakuContext.Provider value={{ waku: waku }}>
         <ThemeProvider theme={themes}>
-          <Room
-            nick={nick}
-            messages={messages}
-            commandHandler={(input: string) => {
-              handleCommand(input, waku, setNick).then(
-                ({ command, response }) => {
-                  const commandMessages = response.map((msg) => {
-                    return Message.fromUtf8String(command, msg);
-                  });
-                  dispatchMessages(commandMessages);
-                }
-              );
-            }}
-          />
+          <Room nick={nick} messages={messages} />
         </ThemeProvider>
       </WakuContext.Provider>
     </div>

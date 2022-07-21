@@ -44,7 +44,8 @@
     "fix:lint": "eslint src --ext .ts --ext .tsx --fix",
     "js-waku:build": "cd ../; npm run build",
     "predeploy": "run-s js-waku:build build",
-    "deploy": "gh-pages -d build"
+    "deploy": "gh-pages -d build",
+    "tsc": "tsc"
   },
   "eslintConfig": {
     "extends": [

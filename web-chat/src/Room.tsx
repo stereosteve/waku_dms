@@ -11,13 +11,12 @@ import { utils } from "js-waku";
 
 interface Props {
   messages: Message[];
-  commandHandler: (cmd: string) => void;
   nick: string;
 }
 
 export default function Room(props: Props) {
   const { waku } = useWaku();
-
+  const [myPubkeyHex, setMyPubkeyHex] = useState<string | undefined>();
   const [storePeers, setStorePeers] = useState(0);
   const [relayPeers, setRelayPeers] = useState(0);
 
@@ -43,6 +42,7 @@ export default function Room(props: Props) {
 
     const privateKey = utils.hexToBytes(localStorage.getItem(localStorageKey)!);
     const publicKey = getPublicKey(privateKey);
+    setMyPubkeyHex(utils.bytesToHex(publicKey));
     console.log(`pubkey: ${utils.bytesToHex(publicKey)}`);
 
     waku.addDecryptionKey(privateKey);
@@ -57,6 +57,26 @@ export default function Room(props: Props) {
       setStorePeers(counter);
     });
   }, [waku]);
+
+  async function handleMessage(
+    message: string,
+    nick: string,
+    messageSender: (msg: WakuMessage) => Promise<void>
+  ) {
+    const timestamp = new Date();
+    const chatMessage = ChatMessage.fromUtf8String(
+      timestamp,
+      nick,
+      myPubkeyHex!,
+      message
+    );
+    const wakuMsg = await WakuMessage.fromUtf8String(
+      chatMessage.encode(),
+      ChatContentTopic,
+      { timestamp }
+    );
+    return messageSender(wakuMsg);
+  }
 
   return (
     <div
@@ -75,7 +95,6 @@ export default function Room(props: Props) {
                 return handleMessage(
                   messageToSend,
                   props.nick,
-                  props.commandHandler,
                   waku.relay.send.bind(waku.relay)
                 );
               }
@@ -84,47 +103,4 @@ export default function Room(props: Props) {
       />
     </div>
   );
-}
-
-async function handleMessage(
-  message: string,
-  nick: string,
-  commandHandler: (cmd: string) => void,
-  messageSender: (msg: WakuMessage) => Promise<void>
-) {
-  if (message.startsWith("/dm ")) {
-    const args = message.split(" ");
-    args.shift();
-    if (args.length < 2) {
-      console.error(`/dm {pubkey} {message}`);
-      return;
-    }
-
-    const pubkeyHex = args.shift()!;
-    const pubkey = utils.hexToBytes(pubkeyHex);
-    const txt = args.join(" ");
-
-    const timestamp = new Date();
-    const chatMessage = ChatMessage.fromUtf8String(timestamp, nick, txt);
-    const wakuMsg = await WakuMessage.fromUtf8String(
-      chatMessage.encode(),
-      ChatContentTopic,
-      { timestamp, encPublicKey: pubkey }
-    );
-
-    return messageSender(wakuMsg);
-  }
-
-  if (message.startsWith("/")) {
-    commandHandler(message);
-  } else {
-    const timestamp = new Date();
-    const chatMessage = ChatMessage.fromUtf8String(timestamp, nick, message);
-    const wakuMsg = await WakuMessage.fromUtf8String(
-      chatMessage.encode(),
-      ChatContentTopic,
-      { timestamp }
-    );
-    return messageSender(wakuMsg);
-  }
 }
