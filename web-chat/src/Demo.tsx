@@ -18,7 +18,7 @@ import {
 import { generate } from 'server-name-generator'
 import { Message } from './Message'
 
-const ChatContentTopic = '/audius-chat/2/hackathon/json'
+const ChatContentTopic = '/audius-chat/4/hackathon/json'
 
 export function Demo() {
   return (
@@ -45,7 +45,7 @@ function Layout() {
 
 function Lobby() {
   const waku = useWaku()
-  const messages = useMessageHistory()
+  const [messages, ready] = useMessageHistory()
   const pubkey = usePubkey()
   const [draft, setDraft] = useState('')
   const [nick, setNick] = useLocalStorage('nick', generate())
@@ -54,7 +54,7 @@ function Lobby() {
   const { chan } = useParams()
   const chanPubkeys = chan?.split(',')
 
-  if (!waku || !messages.length) return <div>loading...</div>
+  if (!waku || !ready) return <div>loading...</div>
 
   // glean list of members (pubkey: nick)
   const pubkeyMap: Record<string, string> = {}
@@ -204,9 +204,9 @@ function Lobby() {
 
 export function NewChannel() {
   const navigate = useNavigate()
-  const messages = useMessageHistory()
+  const [messages, ready] = useMessageHistory()
   const pubkey = usePubkey()
-  if (!messages) return <div> loading </div>
+  if (!ready) return <div> loading </div>
 
   const pubkeyMap: Record<string, string> = {}
   for (let msg of messages) {
@@ -311,9 +311,10 @@ async function loadHistory(waku: Waku) {
   return history
 }
 
-function useMessageHistory() {
+function useMessageHistory(): [Message[], boolean] {
   const waku = useWaku()
   const [messages, dispatchMessages] = useReducer(reduceMessages, [])
+  const [loaded, setLoaded] = useState(false)
 
   useEffect(() => {
     if (!waku) return
@@ -327,6 +328,7 @@ function useMessageHistory() {
 
     loadHistory(waku).then((history) => {
       dispatchMessages(history)
+      setLoaded(true)
       waku.relay.addObserver(handleRelayMessage, [ChatContentTopic])
     })
 
@@ -339,7 +341,7 @@ function useMessageHistory() {
     return state.concat(newMessages)
   }
 
-  return messages
+  return [messages, loaded]
 }
 
 function usePubkey() {
