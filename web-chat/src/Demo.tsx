@@ -37,10 +37,7 @@ export function Demo() {
 function Layout() {
   return (
     <div>
-      <nav>
-        <Link to="/">Lobby</Link>
-        <Link to="/dm">New Chat</Link>
-      </nav>
+      <nav></nav>
       <Outlet />
     </div>
   )
@@ -51,12 +48,13 @@ function Lobby() {
   const messages = useMessageHistory()
   const pubkey = usePubkey()
   const [draft, setDraft] = useState('')
-  // const nick = window.localStorage.getItem('nick') || generate()
   const [nick, setNick] = useLocalStorage('nick', generate())
 
   // if we're in a channel
   const { chan } = useParams()
   const chanPubkeys = chan?.split(',')
+
+  if (!waku || !messages.length) return <div>loading...</div>
 
   // glean list of members (pubkey: nick)
   const pubkeyMap: Record<string, string> = {}
@@ -65,17 +63,19 @@ function Lobby() {
   }
 
   // glean chan list from visible messages
-  const chanMap: Record<string, string> = {}
+  const chanMap: Record<string, string[]> = {}
   for (let msg of messages) {
     let chan = msg.chatMessage.chan
     if (chan) {
       const nicks = chan
         .split(',')
         .map((k) => pubkeyMap[k] || k.substring(0, 12))
-        .join(', ')
       chanMap[chan] = nicks
     }
   }
+
+  // if we are in a chan... get the members
+  const chanNicks = chanPubkeys?.map((pk) => pubkeyMap[pk])
 
   const visibleMessages = messages.filter((m) => m.chatMessage.chan === chan)
 
@@ -102,7 +102,6 @@ function Lobby() {
       // if it's a DM, send a message for each toPubkey
       // and also fromPubkey
       //  encPublicKey: pubkey
-      // 1
       if (chanPubkeys) {
         return Promise.all(
           chanPubkeys.map(async (encPublicKey) => {
@@ -111,7 +110,7 @@ function Lobby() {
               ChatContentTopic,
               { timestamp, encPublicKey }
             )
-            console.log('sending message', { chan, encPublicKey })
+            // console.log('sending message', { chan, encPublicKey })
             return waku.relay.send(wakuMsg)
           })
         )
@@ -126,41 +125,79 @@ function Lobby() {
     }
   }
 
-  // TODO: navbar on left with chan list...
   return (
-    <div>
+    <div style={{ display: 'flex' }}>
       <nav>
-        {Object.entries(chanMap).map(([chan, name]) => (
+        <Link to="/">Lobby</Link>
+
+        <hr />
+        {Object.entries(chanMap).map(([chan, nicks]) => (
           <Link key={chan} to={`/dm/${chan}`}>
-            {name}
+            {nicks.map((nick) => (
+              <span key={nick}>{nick}</span>
+            ))}
           </Link>
         ))}
+        <hr />
+
+        <Link to="/dm">+ New Chat</Link>
       </nav>
 
-      {visibleMessages.map((msg, idx) => (
-        <div key={idx}>
-          <b>{pubkeyMap[msg.chatMessage.fromPubkey]}: </b>
-          {msg.chatMessage.payload}
+      <div
+        className="chat-main"
+        style={{
+          height: '100vh',
+          width: '100vw',
+          overflow: 'hidden',
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
+        <div
+          style={{
+            background: 'aliceblue',
+            padding: 10,
+            fontSize: 24,
+            fontWeight: 'bold',
+          }}
+        >
+          chan: {chanNicks ? chanNicks.join(', ') : 'Lobby'}
         </div>
-      ))}
+        <div style={{ flexGrow: 1, overflow: 'auto', padding: 5 }}>
+          {visibleMessages.length === 0 ? (
+            <div style={{ padding: 30, fontSize: 24 }}>
+              No messages yet... say something
+            </div>
+          ) : null}
+          {visibleMessages.map((msg, idx) => (
+            <div key={idx}>
+              <b>{pubkeyMap[msg.chatMessage.fromPubkey]}: </b>
+              {msg.chatMessage.payload}
+            </div>
+          ))}
+          <AlwaysScrollToBottom messages={messages} />
+        </div>
 
-      <AlwaysScrollToBottom messages={messages} />
-
-      <form onSubmit={sendMessage}>
-        <input
-          type="text"
-          required
-          value={nick}
-          onChange={(e) => setNick(e.target.value)}
-        />
-        <input
-          type="text"
-          required
-          value={draft}
-          onChange={(e) => setDraft(e.target.value)}
-        />
-        <button>say</button>
-      </form>
+        <form
+          onSubmit={sendMessage}
+          style={{ background: 'pink', padding: 10 }}
+        >
+          <input
+            type="text"
+            required
+            value={nick}
+            onChange={(e) => setNick(e.target.value)}
+          />
+          <input
+            type="text"
+            placeholder="say something..."
+            required
+            value={draft}
+            onChange={(e) => setDraft(e.target.value)}
+          />
+          <button>say</button>
+        </form>
+      </div>
     </div>
   )
 }
@@ -188,25 +225,24 @@ export function NewChannel() {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form
+      onSubmit={handleSubmit}
+      style={{
+        maxWidth: 800,
+        margin: '50px auto',
+        border: '1px solid #333',
+        padding: 10,
+      }}
+    >
       {Object.entries(pubkeyMap).map(([pubkey, nick]) => (
         <label style={{ display: 'block' }} key={pubkey}>
           <input type="checkbox" name={pubkey} />
-          <b>{nick}</b>
-          <div style={{ fontSize: '80%', color: '#555' }}>{pubkey}</div>
+          <b title={pubkey}>{nick}</b>
         </label>
       ))}
       <button>chat</button>
     </form>
   )
-}
-
-export function Channel() {
-  const { chan } = useParams()
-  const pubkeys = chan?.split(',')
-  if (!pubkeys || !pubkeys.length) return <div>invalid pubkey list</div>
-
-  return <div> chan {pubkeys.join(' :: ')} </div>
 }
 
 const AlwaysScrollToBottom = (props: { messages: Message[] }) => {

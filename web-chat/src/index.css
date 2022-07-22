@@ -29,10 +29,17 @@ code {
 }
 
 nav {
-  background: #ccc;
-  padding: 10px;
+  background: #efefef;
 }
 nav a {
-  color: #333;
-  margin: 20px;
+  display: block;
+  background: #333;
+  color: white;
+  padding: 10px;
+  margin: 5px;
+  text-decoration: none;
+  border-radius: 10px;
+}
+nav a span {
+  display: block;
 }
