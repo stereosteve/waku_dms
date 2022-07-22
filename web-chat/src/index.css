@@ -28,3 +28,12 @@ code {
 .chat-room{
   margin: 2px;
 }
+
+nav {
+  background: #ccc;
+  padding: 10px;
+}
+nav a {
+  color: #333;
+  margin: 20px;
+}

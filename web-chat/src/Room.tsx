@@ -73,6 +73,11 @@ export default function Room(props: Props) {
       },
       timestamp
     );
+
+    // if toPubkeys exists... it's a DM
+    // if it's a DM, send a message for each toPubkey
+    // and also fromPubkey
+    //  encPublicKey: pubkey
     const wakuMsg = await WakuMessage.fromUtf8String(
       message.encode(),
       ChatContentTopic,
@@ -91,6 +96,7 @@ export default function Room(props: Props) {
         title="Waku v2 chat app"
       />
       <ChatList messages={props.messages} />
+      <div>TO WHOOOOM</div>
       <MessageInput
         sendMessage={
           waku
