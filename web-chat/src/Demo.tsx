@@ -77,7 +77,7 @@ function Lobby() {
     }
   }
 
-  const visibleMessages = messages.filter((m) => m.chatMessage.chan == chan)
+  const visibleMessages = messages.filter((m) => m.chatMessage.chan === chan)
 
   async function sendMessage(e: FormEvent) {
     e.preventDefault()
@@ -256,7 +256,7 @@ function useWaku() {
     wakuPromise.then(setWaku).catch((e) => {
       console.log('Waku init failed ', e)
     })
-  }, [])
+  }, [waku])
 
   return waku
 }
@@ -282,12 +282,17 @@ function useMessageHistory() {
   useEffect(() => {
     if (!waku) return
 
-    // if (messages.length == 0) {
+    function handleRelayMessage(wakuMsg: WakuMessage) {
+      const msg = Message.fromWakuMessage(wakuMsg)
+      if (msg) {
+        dispatchMessages([msg])
+      }
+    }
+
     loadHistory(waku).then((history) => {
       dispatchMessages(history)
       waku.relay.addObserver(handleRelayMessage, [ChatContentTopic])
     })
-    // }
 
     return function cleanUp() {
       waku?.relay.deleteObserver(handleRelayMessage, [ChatContentTopic])
@@ -296,14 +301,6 @@ function useMessageHistory() {
 
   function reduceMessages(state: Message[], newMessages: Message[]) {
     return state.concat(newMessages)
-  }
-
-  function handleRelayMessage(wakuMsg: WakuMessage) {
-    console.log('Message received: ', messages, wakuMsg)
-    const msg = Message.fromWakuMessage(wakuMsg)
-    if (msg) {
-      dispatchMessages([msg])
-    }
   }
 
   return messages
