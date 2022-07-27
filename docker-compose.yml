@@ -4,8 +4,8 @@ services:
   waku1:
     image: statusteam/nim-waku:latest
     command: 
-      # - --storenode=/ip4/10.5.0.6/tcp/60100/p2p/16Uiu2HAmSXY6voQFgDphNDQz3fFProHPFYCsC4tBvxh6BsfMVUG9
-      # - --staticnode=/ip4/10.5.0.6/tcp/60100/p2p/16Uiu2HAmSXY6voQFgDphNDQz3fFProHPFYCsC4tBvxh6BsfMVUG9
+      - --storenode=/ip4/10.5.0.6/tcp/60100/p2p/16Uiu2HAmSXY6voQFgDphNDQz3fFProHPFYCsC4tBvxh6BsfMVUG9
+      - --staticnode=/ip4/10.5.0.6/tcp/60100/p2p/16Uiu2HAmSXY6voQFgDphNDQz3fFProHPFYCsC4tBvxh6BsfMVUG9
       - --nodekey=4df5a0aa6f8be1843c22dba676fbf710bfb421ebb0093603e10e5a7579959a59
       - --persist-messages
       - --persist-peers
@@ -23,26 +23,28 @@ services:
       - '8000:8000'
 
   # 16Uiu2HAmSXY6voQFgDphNDQz3fFProHPFYCsC4tBvxh6BsfMVUG9
-  # waku2:
-  #   image: statusteam/nim-waku:latest
-  #   command:
-  #     - --storenode=/ip4/10.5.0.5/tcp/60000/p2p/16Uiu2HAm4Z7BSydTt2WmNPdm3mu57Gr5emBNjqsBJnyNiifRtzWY
-  #     - --staticnode=/ip4/10.5.0.5/tcp/60000/p2p/16Uiu2HAm4Z7BSydTt2WmNPdm3mu57Gr5emBNjqsBJnyNiifRtzWY
-  #     - --nodekey=bea2c61aa5300ae4eeac1a89542dd670c85ebade789afd035e9f8d9ac0edcaa6
-  #     - --persist-messages
-  #     - --persist-peers
-  #     - --websocket-support
-  #     - --websocket-port=8001
-  #     - --tcp-port=60100
-  #     - --db-path=./data
-  #   volumes:
-  #     - ./data/waku2:/data
-  #   networks:
-  #     waku:
-  #       ipv4_address: 10.5.0.6
-  #   ports:
-  #     - '60100:60100'
-  #     - '8001:8001'
+  waku2:
+    image: statusteam/nim-waku:latest
+    command:
+      - --storenode=/ip4/10.5.0.5/tcp/60000/p2p/16Uiu2HAm4Z7BSydTt2WmNPdm3mu57Gr5emBNjqsBJnyNiifRtzWY
+      - --staticnode=/ip4/10.5.0.5/tcp/60000/p2p/16Uiu2HAm4Z7BSydTt2WmNPdm3mu57Gr5emBNjqsBJnyNiifRtzWY
+      - --nodekey=bea2c61aa5300ae4eeac1a89542dd670c85ebade789afd035e9f8d9ac0edcaa6
+      - --persist-messages
+      - --persist-peers
+      - --websocket-support
+      - --websocket-port=8001
+      - --tcp-port=60100
+      - --db-path=./data
+    volumes:
+      - ./data/waku2:/data
+    networks:
+      waku:
+        ipv4_address: 10.5.0.6
+    ports:
+      - '60100:60100'
+      - '8001:8001'
+  
+
 
 
 networks:
