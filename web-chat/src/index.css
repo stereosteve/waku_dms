@@ -44,3 +44,12 @@ nav a {
 nav a span {
   display: block;
 }
+
+.waku-display {
+  border: 1px solid blue;
+  min-width: 200px;
+  padding: 10px;
+  margin: 15px;
+  box-shadow: 5px 5px #ccc;
+  background: white;
+}

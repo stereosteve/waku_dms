@@ -1,56 +1,144 @@
 services:
-
   # 16Uiu2HAm4Z7BSydTt2WmNPdm3mu57Gr5emBNjqsBJnyNiifRtzWY
-  waku1:
+  waku5:
     image: statusteam/nim-waku:latest
-    command: 
-      - --storenode=/ip4/10.5.0.6/tcp/60100/p2p/16Uiu2HAmSXY6voQFgDphNDQz3fFProHPFYCsC4tBvxh6BsfMVUG9
-      - --staticnode=/ip4/10.5.0.6/tcp/60100/p2p/16Uiu2HAmSXY6voQFgDphNDQz3fFProHPFYCsC4tBvxh6BsfMVUG9
+    command:
+      - --storenode=/ip4/10.5.0.6/tcp/60000/p2p/16Uiu2HAmSXY6voQFgDphNDQz3fFProHPFYCsC4tBvxh6BsfMVUG9
+      - --storenode=/ip4/10.5.0.7/tcp/60000/p2p/16Uiu2HAm7LQi8U6DhL4WvWBSFZhgn18xm8Vse6DtBhPhpMha1aGe
+      - --storenode=/ip4/10.5.0.8/tcp/60000/p2p/16Uiu2HAm5RQL6KdAvnuiTPfQgArnBqpaVxQepZeWaCzEDd8L8M5q
+      - --storenode=/ip4/10.5.0.9/tcp/60000/p2p/16Uiu2HAkzrgawL7rpns8uFNUhFKor4RyqCgMSKUTGWfZhdbDFLvq
+
+      - --staticnode=/ip4/10.5.0.6/tcp/60000/p2p/16Uiu2HAmSXY6voQFgDphNDQz3fFProHPFYCsC4tBvxh6BsfMVUG9
+      - --staticnode=/ip4/10.5.0.7/tcp/60000/p2p/16Uiu2HAm7LQi8U6DhL4WvWBSFZhgn18xm8Vse6DtBhPhpMha1aGe
+      - --staticnode=/ip4/10.5.0.8/tcp/60000/p2p/16Uiu2HAm5RQL6KdAvnuiTPfQgArnBqpaVxQepZeWaCzEDd8L8M5q
+      - --staticnode=/ip4/10.5.0.9/tcp/60000/p2p/16Uiu2HAkzrgawL7rpns8uFNUhFKor4RyqCgMSKUTGWfZhdbDFLvq
+
       - --nodekey=4df5a0aa6f8be1843c22dba676fbf710bfb421ebb0093603e10e5a7579959a59
       - --persist-messages
       - --persist-peers
       - --websocket-support
       - --db-path=./data
-    hostname: waku1
-    domainname: waku1
+      # - --topics='/waku/2/default-waku/proto replica_test_1'
     networks:
       waku:
         ipv4_address: 10.5.0.5
     volumes:
-      - ./data/waku1:/data
+      - ./data/waku5:/data
     ports:
-      - '60000:60000'
-      - '8000:8000'
+      - "8005:8000"
 
-  # 16Uiu2HAmSXY6voQFgDphNDQz3fFProHPFYCsC4tBvxh6BsfMVUG9
-  waku2:
+  waku6:
     image: statusteam/nim-waku:latest
     command:
       - --storenode=/ip4/10.5.0.5/tcp/60000/p2p/16Uiu2HAm4Z7BSydTt2WmNPdm3mu57Gr5emBNjqsBJnyNiifRtzWY
+      - --storenode=/ip4/10.5.0.7/tcp/60000/p2p/16Uiu2HAm7LQi8U6DhL4WvWBSFZhgn18xm8Vse6DtBhPhpMha1aGe
+      - --storenode=/ip4/10.5.0.8/tcp/60000/p2p/16Uiu2HAm5RQL6KdAvnuiTPfQgArnBqpaVxQepZeWaCzEDd8L8M5q
+      - --storenode=/ip4/10.5.0.9/tcp/60000/p2p/16Uiu2HAkzrgawL7rpns8uFNUhFKor4RyqCgMSKUTGWfZhdbDFLvq
+
       - --staticnode=/ip4/10.5.0.5/tcp/60000/p2p/16Uiu2HAm4Z7BSydTt2WmNPdm3mu57Gr5emBNjqsBJnyNiifRtzWY
+      - --staticnode=/ip4/10.5.0.7/tcp/60000/p2p/16Uiu2HAm7LQi8U6DhL4WvWBSFZhgn18xm8Vse6DtBhPhpMha1aGe
+      - --staticnode=/ip4/10.5.0.8/tcp/60000/p2p/16Uiu2HAm5RQL6KdAvnuiTPfQgArnBqpaVxQepZeWaCzEDd8L8M5q
+      - --staticnode=/ip4/10.5.0.9/tcp/60000/p2p/16Uiu2HAkzrgawL7rpns8uFNUhFKor4RyqCgMSKUTGWfZhdbDFLvq
+
       - --nodekey=bea2c61aa5300ae4eeac1a89542dd670c85ebade789afd035e9f8d9ac0edcaa6
       - --persist-messages
       - --persist-peers
       - --websocket-support
-      - --websocket-port=8001
-      - --tcp-port=60100
       - --db-path=./data
-    volumes:
-      - ./data/waku2:/data
+      # - --topics='/waku/2/default-waku/proto replica_test_1'
     networks:
       waku:
         ipv4_address: 10.5.0.6
+    volumes:
+      - ./data/waku6:/data
     ports:
-      - '60100:60100'
-      - '8001:8001'
-  
+      - "8006:8000"
 
+  waku7:
+    image: statusteam/nim-waku:latest
+    command:
+      - --storenode=/ip4/10.5.0.5/tcp/60000/p2p/16Uiu2HAm4Z7BSydTt2WmNPdm3mu57Gr5emBNjqsBJnyNiifRtzWY
+      - --storenode=/ip4/10.5.0.6/tcp/60000/p2p/16Uiu2HAmSXY6voQFgDphNDQz3fFProHPFYCsC4tBvxh6BsfMVUG9
+      - --storenode=/ip4/10.5.0.8/tcp/60000/p2p/16Uiu2HAm5RQL6KdAvnuiTPfQgArnBqpaVxQepZeWaCzEDd8L8M5q
+      - --storenode=/ip4/10.5.0.9/tcp/60000/p2p/16Uiu2HAkzrgawL7rpns8uFNUhFKor4RyqCgMSKUTGWfZhdbDFLvq
 
+      - --staticnode=/ip4/10.5.0.5/tcp/60000/p2p/16Uiu2HAm4Z7BSydTt2WmNPdm3mu57Gr5emBNjqsBJnyNiifRtzWY
+      - --staticnode=/ip4/10.5.0.6/tcp/60000/p2p/16Uiu2HAmSXY6voQFgDphNDQz3fFProHPFYCsC4tBvxh6BsfMVUG9
+      - --staticnode=/ip4/10.5.0.8/tcp/60000/p2p/16Uiu2HAm5RQL6KdAvnuiTPfQgArnBqpaVxQepZeWaCzEDd8L8M5q
+      - --staticnode=/ip4/10.5.0.9/tcp/60000/p2p/16Uiu2HAkzrgawL7rpns8uFNUhFKor4RyqCgMSKUTGWfZhdbDFLvq
+
+      - --nodekey=d893a74a11c3b2a1930fd7502476e19068b8fa2be39b7705340adde272ad74d4
+      - --persist-messages
+      - --persist-peers
+      - --websocket-support
+      - --db-path=./data
+      # - --topics='/waku/2/default-waku/proto replica_test_1'
+    networks:
+      waku:
+        ipv4_address: 10.5.0.7
+    volumes:
+      - ./data/waku7:/data
+    ports:
+      - "8007:8000"
+
+  waku8:
+    image: statusteam/nim-waku:latest
+    command:
+      - --storenode=/ip4/10.5.0.5/tcp/60000/p2p/16Uiu2HAm4Z7BSydTt2WmNPdm3mu57Gr5emBNjqsBJnyNiifRtzWY
+      - --storenode=/ip4/10.5.0.6/tcp/60000/p2p/16Uiu2HAmSXY6voQFgDphNDQz3fFProHPFYCsC4tBvxh6BsfMVUG9
+      - --storenode=/ip4/10.5.0.7/tcp/60000/p2p/16Uiu2HAm7LQi8U6DhL4WvWBSFZhgn18xm8Vse6DtBhPhpMha1aGe
+      - --storenode=/ip4/10.5.0.9/tcp/60000/p2p/16Uiu2HAkzrgawL7rpns8uFNUhFKor4RyqCgMSKUTGWfZhdbDFLvq
+
+      - --staticnode=/ip4/10.5.0.5/tcp/60000/p2p/16Uiu2HAm4Z7BSydTt2WmNPdm3mu57Gr5emBNjqsBJnyNiifRtzWY
+      - --staticnode=/ip4/10.5.0.6/tcp/60000/p2p/16Uiu2HAmSXY6voQFgDphNDQz3fFProHPFYCsC4tBvxh6BsfMVUG9
+      - --staticnode=/ip4/10.5.0.7/tcp/60000/p2p/16Uiu2HAm7LQi8U6DhL4WvWBSFZhgn18xm8Vse6DtBhPhpMha1aGe
+      - --staticnode=/ip4/10.5.0.9/tcp/60000/p2p/16Uiu2HAkzrgawL7rpns8uFNUhFKor4RyqCgMSKUTGWfZhdbDFLvq
+
+      - --nodekey=4b00987a9b374709eac7b12ba5121f9b55febc57898b945f89d0112b39cd92a8
+      - --persist-messages
+      - --persist-peers
+      - --websocket-support
+      - --db-path=./data
+      # - --topics='/waku/2/default-waku/proto replica_test_1'
+    networks:
+      waku:
+        ipv4_address: 10.5.0.8
+    volumes:
+      - ./data/waku8:/data
+    ports:
+      - "8008:8000"
+
+  waku9:
+    image: statusteam/nim-waku:latest
+    command:
+      - --storenode=/ip4/10.5.0.5/tcp/60000/p2p/16Uiu2HAm4Z7BSydTt2WmNPdm3mu57Gr5emBNjqsBJnyNiifRtzWY
+      - --storenode=/ip4/10.5.0.6/tcp/60000/p2p/16Uiu2HAmSXY6voQFgDphNDQz3fFProHPFYCsC4tBvxh6BsfMVUG9
+      - --storenode=/ip4/10.5.0.7/tcp/60000/p2p/16Uiu2HAm7LQi8U6DhL4WvWBSFZhgn18xm8Vse6DtBhPhpMha1aGe
+      - --storenode=/ip4/10.5.0.8/tcp/60000/p2p/16Uiu2HAm5RQL6KdAvnuiTPfQgArnBqpaVxQepZeWaCzEDd8L8M5q
+
+      - --staticnode=/ip4/10.5.0.5/tcp/60000/p2p/16Uiu2HAm4Z7BSydTt2WmNPdm3mu57Gr5emBNjqsBJnyNiifRtzWY
+      - --staticnode=/ip4/10.5.0.6/tcp/60000/p2p/16Uiu2HAmSXY6voQFgDphNDQz3fFProHPFYCsC4tBvxh6BsfMVUG9
+      - --staticnode=/ip4/10.5.0.7/tcp/60000/p2p/16Uiu2HAm7LQi8U6DhL4WvWBSFZhgn18xm8Vse6DtBhPhpMha1aGe
+      - --staticnode=/ip4/10.5.0.8/tcp/60000/p2p/16Uiu2HAm5RQL6KdAvnuiTPfQgArnBqpaVxQepZeWaCzEDd8L8M5q
+
+      - --nodekey=681c7a206e501e8dcd5c276e9e63cb9a320fb35d02e3bdf06b69723f88a54667
+      - --persist-messages
+      - --persist-peers
+      - --websocket-support
+      - --db-path=./data
+      # - --topics='/waku/2/default-waku/proto replica_test_1'
+    networks:
+      waku:
+        ipv4_address: 10.5.0.9
+    volumes:
+      - ./data/waku9:/data
+    ports:
+      - "8009:8000"
 
 networks:
   waku:
     driver: bridge
     ipam:
-     config:
-       - subnet: 10.5.0.0/16
-         gateway: 10.5.0.1
+      config:
+        - subnet: 10.5.0.0/16
+          gateway: 10.5.0.1
